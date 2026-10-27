@@ -1,0 +1,11 @@
+{
+  "type": "object",
+  "required": ["kind", "name"],
+  "properties": {
+    "kind":   { "enum": ["go-cli","go-service","py-service","tf-module","dockerfile","gha-workflow"] },
+    "name":   { "type": "string" },
+    "dest":   { "type": "string", "default": "." },
+    "vars":   { "type": "object", "additionalProperties": { "type": "string" } },
+    "dry_run": { "type": "boolean", "default": true }
+  }
+}

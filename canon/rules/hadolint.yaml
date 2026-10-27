@@ -1,0 +1,6 @@
+failure-threshold: style
+trustedRegistries:
+  - docker.io
+  - gcr.io
+  - ghcr.io
+  - cgr.dev

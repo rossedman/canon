@@ -1,0 +1,23 @@
+openapi: 3.1.0
+info:
+  title: {{.name}}
+  version: 0.1.0
+paths:
+  /healthz:
+    get:
+      operationId: getHealthz
+      responses:
+        "200":
+          description: The service is up
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Health"
+components:
+  schemas:
+    Health:
+      type: object
+      required: [status]
+      properties:
+        status:
+          type: string

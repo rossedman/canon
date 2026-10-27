@@ -1,0 +1,25 @@
+package app
+
+import "testing"
+
+func TestGreet(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name    string
+		in      string
+		want    string
+		wantErr bool
+	}{
+		{name: "named", in: "canon", want: "hello, canon"},
+		{name: "empty", in: "", wantErr: true},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			got, err := Greet(tt.in)
+			if (err != nil) != tt.wantErr || got != tt.want {
+				t.Fatalf("Greet(%q) = %q, %v", tt.in, got, err)
+			}
+		})
+	}
+}

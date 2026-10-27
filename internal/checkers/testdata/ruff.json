@@ -1,0 +1,126 @@
+[
+  {
+    "cell": null,
+    "code": "E401",
+    "end_location": {
+      "column": 22,
+      "row": 1
+    },
+    "filename": "py/app.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "import os\nimport subprocess",
+          "end_location": {
+            "column": 22,
+            "row": 1
+          },
+          "location": {
+            "column": 1,
+            "row": 1
+          }
+        }
+      ],
+      "message": "Split imports"
+    },
+    "location": {
+      "column": 1,
+      "row": 1
+    },
+    "message": "Multiple imports on one line",
+    "name": "multiple-imports-on-one-line",
+    "noqa_row": 1,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/multiple-imports-on-one-line"
+  },
+  {
+    "cell": null,
+    "code": "I001",
+    "end_location": {
+      "column": 22,
+      "row": 1
+    },
+    "filename": "py/app.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "import os\nimport subprocess\n\n\n",
+          "end_location": {
+            "column": 1,
+            "row": 2
+          },
+          "location": {
+            "column": 1,
+            "row": 1
+          }
+        }
+      ],
+      "message": "Organize imports"
+    },
+    "location": {
+      "column": 1,
+      "row": 1
+    },
+    "message": "Import block is un-sorted or un-formatted",
+    "name": "unsorted-imports",
+    "noqa_row": 1,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unsorted-imports"
+  },
+  {
+    "cell": null,
+    "code": "F401",
+    "end_location": {
+      "column": 10,
+      "row": 1
+    },
+    "filename": "py/app.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "import subprocess",
+          "end_location": {
+            "column": 22,
+            "row": 1
+          },
+          "location": {
+            "column": 1,
+            "row": 1
+          }
+        }
+      ],
+      "message": "Remove unused import: `os`"
+    },
+    "location": {
+      "column": 8,
+      "row": 1
+    },
+    "message": "`os` imported but unused",
+    "name": "unused-import",
+    "noqa_row": 1,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unused-import"
+  },
+  {
+    "cell": null,
+    "code": "S602",
+    "end_location": {
+      "column": 27,
+      "row": 3
+    },
+    "filename": "py/app.py",
+    "fix": null,
+    "location": {
+      "column": 12,
+      "row": 3
+    },
+    "message": "`subprocess` call with `shell=True` identified, security issue",
+    "name": "subprocess-popen-with-shell-equals-true",
+    "noqa_row": 3,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/subprocess-popen-with-shell-equals-true"
+  }
+]

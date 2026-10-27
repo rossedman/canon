@@ -1,0 +1,7 @@
+name: go-library
+description: A Go module with no commands
+priority: 20
+detect:
+  all: [go.mod]
+scopes: [go, ci, oss, yaml]
+exclude: [go-cobra-one-command-per-file, go-config-viper, go-charmbracelet-ux]

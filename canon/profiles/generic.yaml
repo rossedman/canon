@@ -1,0 +1,5 @@
+name: generic
+description: Any repository; applies every scope and lets file patterns decide
+priority: 0
+detect: {}
+scopes: [go, python, containers, terraform, ci, oss, yaml]

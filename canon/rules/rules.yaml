@@ -1,0 +1,120 @@
+# Rules map checker output to the records they enforce. A finding is reported
+# only when its checker code matches a rule here, so every finding has a reason.
+# "*" matches every code from that checker that no more specific rule claims.
+rules:
+  - id: golangci-errors
+    record: go-errors-wrap
+    checker: golangci-lint
+    codes: [wrapcheck, errorlint]
+    description: golangci-lint with wrapcheck and errorlint enabled
+  - id: golangci-baseline
+    record: go-lint-baseline
+    checker: golangci-lint
+    codes: [govet, staticcheck, errcheck, revive, gosec, misspell, ineffassign, unused]
+    description: The shared golangci-lint baseline linters
+  - id: canon-one-command-per-file
+    record: go-cobra-one-command-per-file
+    checker: canon
+    codes: [one-command-per-file]
+    description: Each cmd/*.go file defines exactly one cobra.Command
+  - id: canon-go-doc-comments
+    record: go-doc-comments
+    checker: canon
+    codes: [go-doc-comments]
+    description: Every function and method has a doc comment
+  - id: canon-go-ux-libraries
+    record: go-charmbracelet-ux
+    checker: canon
+    codes: [go-ux-libraries]
+    description: No non-Charmbracelet terminal UX libraries are imported
+  - id: ruff-baseline
+    record: python-ruff
+    checker: ruff
+    codes: ["*"]
+    description: ruff check with the shared rule selection
+  - id: canon-uv-lock
+    record: python-uv
+    checker: canon
+    codes: [uv-lock]
+    description: pyproject.toml has a committed uv.lock beside it
+  - id: canon-final-stage-base
+    record: containers-distroless-base
+    checker: canon
+    codes: [final-stage-base]
+    description: The final Dockerfile stage uses a distroless, chainguard or scratch base
+  - id: hadolint-tags
+    record: containers-pin-base-images
+    checker: hadolint
+    codes: [DL3006, DL3007]
+    description: hadolint checks that base images name a version tag
+  - id: canon-base-digest
+    record: containers-pin-base-images
+    checker: canon
+    codes: [base-digest]
+    description: Every external FROM pins a sha256 digest
+  - id: hadolint-user
+    record: containers-non-root
+    checker: hadolint
+    codes: [DL3002]
+    description: hadolint checks the last USER is not root
+  - id: canon-final-stage-user
+    record: containers-non-root
+    checker: canon
+    codes: [final-stage-user]
+    description: The final stage sets a non-root USER (or uses a nonroot base)
+  - id: hadolint-hygiene
+    record: containers-dockerfile-hygiene
+    checker: hadolint
+    codes: ["*"]
+    description: Every other hadolint best-practice check
+  - id: tflint-versions
+    record: terraform-version-constraints
+    checker: tflint
+    codes: [terraform_required_version, terraform_required_providers]
+    description: tflint checks Terraform and provider version constraints
+  - id: tflint-conventions
+    record: terraform-module-conventions
+    checker: tflint
+    codes: ["*"]
+    description: tflint's recommended terraform ruleset
+  - id: checkov-terraform
+    record: terraform-security-scan
+    checker: checkov
+    codes: ["*"]
+    description: checkov security checks for Terraform
+  - id: canon-actions-pinned
+    record: ci-pin-actions-sha
+    checker: canon
+    codes: [actions-pinned]
+    description: Every remote uses reference pins a 40-character commit SHA
+  - id: canon-workflow-permissions
+    record: ci-least-privilege
+    checker: canon
+    codes: [workflow-permissions]
+    description: Every workflow declares a top-level permissions block
+  - id: yamllint-baseline
+    record: yaml-lint
+    checker: yamllint
+    codes: ["*"]
+    description: yamllint with the shared config
+  - id: canon-oss-files
+    record: oss-community-files
+    checker: canon
+    codes: [oss-files]
+    description: The repo root has LICENSE, README, SECURITY, CONTRIBUTING and CODE_OF_CONDUCT
+  - id: canon-release-signing
+    record: oss-release-signing
+    checker: canon
+    codes: [release-signing]
+    description: GoReleaser signs the checksums file with cosign
+
+# Concerns are what review reports that no linter can see. Each kind points
+# at the record a reviewer should read.
+concerns:
+  new-dependency: go-lint-baseline
+  new-dockerfile: containers-distroless-base
+  terraform-provider-bump: terraform-version-constraints
+  exported-api-change: go-doc-comments
+  missing-tests: go-test-coverage
+  new-workflow: ci-least-privilege
+  api-spec-change: go-openapi-spec-first

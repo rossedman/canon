@@ -1,0 +1,11 @@
+description: A Python project managed with uv and linted with ruff
+root: "{{.name}}"
+records: [python-uv, python-ruff]
+vars:
+  package: "{{snake .name}}"
+  description: "{{.name}} does one thing well"
+  python: "3.12"
+next:
+  - uv lock
+  - uv run ruff check
+  - uv run pytest

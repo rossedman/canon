@@ -1,0 +1,6 @@
+name: tf-module
+description: A Terraform module or root configuration
+priority: 20
+detect:
+  any: ["*.tf"]
+scopes: [terraform, ci, oss, yaml]

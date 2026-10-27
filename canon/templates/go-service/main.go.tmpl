@@ -1,0 +1,25 @@
+// Command {{.name}}: {{.description}}.
+package main
+
+import (
+	"log/slog"
+	"net/http"
+	"os"
+	"time"
+
+	"{{.module}}/internal/server"
+)
+
+// main serves the API until the process is stopped.
+func main() {
+	srv := &http.Server{
+		Addr:              ":{{.port}}",
+		Handler:           server.New(),
+		ReadHeaderTimeout: 5 * time.Second,
+	}
+	slog.Info("listening", "addr", srv.Addr)
+	if err := srv.ListenAndServe(); err != nil {
+		slog.Error("server stopped", "err", err)
+		os.Exit(1)
+	}
+}

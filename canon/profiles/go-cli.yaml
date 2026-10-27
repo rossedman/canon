@@ -1,0 +1,6 @@
+name: go-cli
+description: A Go command-line tool built with cobra
+priority: 30
+detect:
+  all: [go.mod, cmd/]
+scopes: [go, containers, ci, oss, yaml]

@@ -1,0 +1,12 @@
+import pytest
+
+from {{.package}} import greet
+
+
+def test_greet() -> None:
+    assert greet("canon") == "hello, canon"
+
+
+def test_greet_empty() -> None:
+    with pytest.raises(ValueError):
+        greet("")

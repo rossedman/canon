@@ -1,0 +1,8 @@
+"""{{.description}}."""
+
+
+def greet(name: str) -> str:
+    """Return a greeting for name."""
+    if not name:
+        raise ValueError("name is empty")
+    return f"hello, {name}"
