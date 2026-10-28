@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/assets/banner.png" alt="canon: your engineering standards, as tools agents call" width="900">
+  <img src="https://raw.githubusercontent.com/rossedman/canon/main/docs/assets/banner.png" alt="canon: your engineering standards, as tools agents call" width="900">
 </p>
 
 <p align="center">
@@ -8,7 +8,7 @@
   <a href="https://goreportcard.com/report/github.com/rossedman/canon"><img alt="Go Report Card" src="https://goreportcard.com/badge/github.com/rossedman/canon"></a>
   <a href="https://github.com/rossedman/canon/releases"><img alt="Release" src="https://img.shields.io/github/v/release/rossedman/canon?color=E8A33D"></a>
   <a href="LICENSE"><img alt="License: Apache-2.0" src="https://img.shields.io/badge/license-Apache--2.0-4C9BE8"></a>
-  <a href="https://rossedman.github.io/canon/"><img alt="Docs" src="https://img.shields.io/badge/docs-rossedman.github.io%2Fcanon-E8A33D"></a>
+  <a href="https://rossedman.io/canon/"><img alt="Docs" src="https://img.shields.io/badge/docs-rossedman.io%2Fcanon-E8A33D"></a>
 </p>
 
 canon turns engineering opinions into tools an agent calls mid-task. It checks
@@ -117,12 +117,12 @@ without the server:
 | `canon/templates/<kind>/` | Scaffold sources; every generated project passes `canon check` |
 | `canon/principles.md` | The beliefs every record ladders up to |
 
-`canon lint` validates all of it. [Writing records](https://rossedman.github.io/canon/guides/writing-records/)
+`canon lint` validates all of it. [Writing records](https://rossedman.io/canon/guides/writing-records/)
 covers the format.
 
 ## Documentation
 
-The full docs are at <https://rossedman.github.io/canon/>: getting started,
+The full docs are at <https://rossedman.io/canon/>: getting started,
 concepts, the MCP reference, hooks and CI, and a generated page for every
 command and every record.
 
