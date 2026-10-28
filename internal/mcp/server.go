@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"net"
 	"net/http"
 	"path/filepath"
 	"strings"
@@ -265,19 +266,32 @@ func jsonResource(uri string, v any) (*sdk.ReadResourceResult, error) {
 }
 
 // ServeHTTP serves srv over streamable HTTP on addr until ctx is done.
+// Requests share a context that ends when shutdown starts, so long-lived
+// event streams from connected clients close instead of holding the server
+// open; anything still open after the grace period is closed outright.
 func ServeHTTP(ctx context.Context, srv *sdk.Server, addr string) error {
 	handler := sdk.NewStreamableHTTPHandler(func(*http.Request) *sdk.Server { return srv }, nil)
-	hs := &http.Server{Addr: addr, Handler: handler, ReadHeaderTimeout: 10 * time.Second}
+	reqCtx, stopRequests := context.WithCancel(context.WithoutCancel(ctx))
+	defer stopRequests()
+	hs := &http.Server{
+		Addr:              addr,
+		Handler:           handler,
+		ReadHeaderTimeout: 10 * time.Second,
+		BaseContext:       func(net.Listener) context.Context { return reqCtx },
+	}
 	errc := make(chan error, 1)
 	go func() { errc <- hs.ListenAndServe() }()
 	select {
 	case err := <-errc:
 		return fmt.Errorf("serve http: %w", err)
 	case <-ctx.Done():
-		shutdown, cancel := context.WithTimeout(context.WithoutCancel(ctx), 5*time.Second)
+		stopRequests()
+		grace, cancel := context.WithTimeout(context.WithoutCancel(ctx), 5*time.Second)
 		defer cancel()
-		if err := hs.Shutdown(shutdown); err != nil {
-			return fmt.Errorf("shut down http: %w", err)
+		if err := hs.Shutdown(grace); err != nil {
+			if cerr := hs.Close(); cerr != nil {
+				return fmt.Errorf("close http: %w", cerr)
+			}
 		}
 		return nil
 	}

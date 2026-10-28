@@ -280,11 +280,17 @@ func TestServeHTTP(t *testing.T) {
 	if res, err := cs.ListTools(ctx, nil); err != nil || len(res.Tools) != 6 {
 		t.Fatalf("tools over http = %v, %v", res, err)
 	}
-	_ = cs.Close()
+	// Shut down while the client session (and its event stream) is still
+	// open: a connected client must not hold the server open.
+	start := time.Now()
 	cancel()
 	if err := <-done; err != nil {
 		t.Fatalf("shutdown: %v", err)
 	}
+	if d := time.Since(start); d > 2*time.Second {
+		t.Fatalf("shutdown took %s with a client connected", d)
+	}
+	_ = cs.Close()
 	if err := ServeHTTP(context.Background(), srv, "bad-addr:-1"); err == nil {
 		t.Fatal("bad address: want error")
 	}
