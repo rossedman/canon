@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <defs>
+    <linearGradient id="cover" x1="40" y1="14" x2="150" y2="172" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#F6CC83"/>
+      <stop offset="0.45" stop-color="#E8A33D"/>
+      <stop offset="1" stop-color="#B9741B"/>
+    </linearGradient>
+    <linearGradient id="spine" x1="38" y1="0" x2="66" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#9A5C10"/>
+      <stop offset="1" stop-color="#C98324"/>
+    </linearGradient>
+    <linearGradient id="pages" x1="60" y1="20" x2="160" y2="176" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FBF4E2"/>
+      <stop offset="1" stop-color="#CDBB92"/>
+    </linearGradient>
+  </defs>
+  <g transform="rotate(-7 100 100) translate(-1 -6)">
+    <!-- page block peeking out right and below -->
+    <rect x="52" y="22" width="108" height="146" rx="9" fill="url(#pages)"/>
+    <path d="M60 163H152M60 158H152" stroke="#A8935F" stroke-opacity="0.55" stroke-width="1.6" stroke-linecap="round"/>
+    <!-- ribbon bookmark -->
+    <path d="M124 158h18v36l-9-8-9 8z" fill="#B9741B"/>
+    <path d="M124 158h6v32l-6 4z" fill="#8F560E" fill-opacity="0.55"/>
+    <!-- cover -->
+    <rect x="40" y="14" width="108" height="146" rx="11" fill="url(#cover)"/>
+    <path d="M51 14h15v146H51a11 11 0 0 1-11-11V25a11 11 0 0 1 11-11z" fill="url(#spine)"/>
+    <path d="M66 20v134" stroke="#F6CC83" stroke-opacity="0.55" stroke-width="2.2" stroke-linecap="round"/>
+    <path d="M74 16h60" stroke="#FFF3D4" stroke-opacity="0.6" stroke-width="2" stroke-linecap="round"/>
+    <!-- prompt glyph -->
+    <path d="M86 58l26 26-26 26" stroke="#15110B" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M118 112h18" stroke="#15110B" stroke-width="13" stroke-linecap="round"/>
+  </g>
+</svg>

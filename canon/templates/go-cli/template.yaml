@@ -1,6 +1,14 @@
 description: A Go CLI with cobra, viper, fang, CI and one command per file
 root: "{{.name}}"
-records: [go-cobra-one-command-per-file, go-config-viper, go-charmbracelet-ux, go-doc-comments, go-lint-baseline, go-errors-wrap, ci-pin-actions-sha, ci-least-privilege]
+records:
+  - go-cobra-one-command-per-file
+  - go-config-viper
+  - go-charmbracelet-ux
+  - go-doc-comments
+  - go-lint-baseline
+  - go-errors-wrap
+  - ci-pin-actions-sha
+  - ci-least-privilege
 vars:
   module: "github.com/example/{{.name}}"
   description: "{{.name}} does one thing well"

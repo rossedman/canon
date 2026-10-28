@@ -22,13 +22,13 @@ type Concern struct {
 
 // Concern kinds.
 const (
-	KindNewDependency   = "new-dependency"
-	KindNewDockerfile   = "new-dockerfile"
-	KindProviderBump    = "terraform-provider-bump"
-	KindExportedAPI     = "exported-api-change"
-	KindMissingTests    = "missing-tests"
-	KindNewWorkflow     = "new-workflow"
-	KindAPISpecChange   = "api-spec-change"
+	KindNewDependency = "new-dependency"
+	KindNewDockerfile = "new-dockerfile"
+	KindProviderBump  = "terraform-provider-bump"
+	KindExportedAPI   = "exported-api-change"
+	KindMissingTests  = "missing-tests"
+	KindNewWorkflow   = "new-workflow"
+	KindAPISpecChange = "api-spec-change"
 )
 
 // File patterns that trigger concerns.
@@ -104,9 +104,18 @@ func dependencies(d FileDiff) []Concern {
 		if m == nil || removed[strings.ToLower(m[1])] || isManifestKeyword(base, m[1]) {
 			continue
 		}
-		out = append(out, Concern{Kind: KindNewDependency, Path: d.Path, Line: l.N, Detail: "adds " + strings.TrimSpace(strings.Trim(strings.TrimSpace(l.Text), `",`))})
+		out = append(out, Concern{Kind: KindNewDependency, Path: d.Path, Line: l.N, Detail: "adds " + depName(re, m, l.Text)})
 	}
 	return out
+}
+
+// depName names a dependency for a concern: module and version for Go and
+// npm, the requirement as written for Python.
+func depName(re *regexp.Regexp, m []string, line string) string {
+	if re == pyRequirement {
+		return strings.Trim(strings.TrimSpace(line), `",`)
+	}
+	return m[1] + " " + m[2]
 }
 
 // isManifestKeyword filters words the loose Python pattern would mistake for

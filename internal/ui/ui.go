@@ -16,7 +16,7 @@ import (
 var (
 	Brand = lipgloss.Color("#E8A33D")
 	OK    = lipgloss.Color("#3FB97F")
-	Warn  = lipgloss.Color("#D9A21B")
+	Warn  = lipgloss.Color("#EE8B4D")
 	Bad   = lipgloss.Color("#E5534B")
 	Info  = lipgloss.Color("#4C9BE8")
 	Dim   = lipgloss.Color("#8B8F99")

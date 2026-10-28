@@ -38,7 +38,7 @@ type ScaffoldResult struct {
 func (e *Engine) Scaffold(ctx context.Context, req ScaffoldRequest) (*ScaffoldResult, error) {
 	plan, err := scaffold.Render(e.Templates, req.Kind, req.Name, req.Vars)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("scaffold %s: %w", req.Kind, err)
 	}
 	dest := req.Dest
 	if dest == "" {
@@ -116,5 +116,9 @@ func (e *Engine) lintTemplates() []Problem {
 
 // Kinds lists the scaffold kinds available.
 func (e *Engine) Kinds() ([]*scaffold.Template, error) {
-	return scaffold.List(e.Templates)
+	ts, err := scaffold.List(e.Templates)
+	if err != nil {
+		return nil, fmt.Errorf("list scaffold kinds: %w", err)
+	}
+	return ts, nil
 }

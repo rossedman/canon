@@ -32,9 +32,9 @@ func (s Severity) rank() int {
 	return 0
 }
 
-// AtLeast reports whether s is as serious as min or more.
-func (s Severity) AtLeast(min Severity) bool {
-	return s.rank() >= min.rank()
+// AtLeast reports whether s is as serious as threshold or more.
+func (s Severity) AtLeast(threshold Severity) bool {
+	return s.rank() >= threshold.rank()
 }
 
 // ParseSeverity turns a flag or tool argument into a Severity. An empty
@@ -96,11 +96,11 @@ func Summarize(fs []Finding) Summary {
 	return s
 }
 
-// Filter keeps the findings at min severity or above.
-func Filter(fs []Finding, min Severity) []Finding {
+// Filter keeps the findings at threshold severity or above.
+func Filter(fs []Finding, threshold Severity) []Finding {
 	out := make([]Finding, 0, len(fs))
 	for _, f := range fs {
-		if f.Severity.AtLeast(min) {
+		if f.Severity.AtLeast(threshold) {
 			out = append(out, f)
 		}
 	}

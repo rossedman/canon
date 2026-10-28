@@ -1,6 +1,15 @@
 description: A Go HTTP service with an OpenAPI spec and a distroless image
 root: "{{.name}}"
-records: [go-openapi-spec-first, go-errors-wrap, go-doc-comments, go-lint-baseline, containers-distroless-base, containers-pin-base-images, containers-non-root, ci-pin-actions-sha, ci-least-privilege]
+records:
+  - go-openapi-spec-first
+  - go-errors-wrap
+  - go-doc-comments
+  - go-lint-baseline
+  - containers-distroless-base
+  - containers-pin-base-images
+  - containers-non-root
+  - ci-pin-actions-sha
+  - ci-least-privilege
 vars:
   module: "github.com/example/{{.name}}"
   description: "{{.name}} serves an HTTP API"

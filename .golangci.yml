@@ -1,0 +1,26 @@
+# canon lints itself with the baseline it ships (canon/rules/golangci.yml),
+# plus gofmt as a formatter check.
+version: "2"
+linters:
+  default: none
+  enable:
+    - errcheck
+    - errorlint
+    - gosec
+    - govet
+    - ineffassign
+    - misspell
+    - revive
+    - staticcheck
+    - unused
+    - wrapcheck
+  exclusions:
+    generated: strict
+    rules:
+      - path: _test\.go
+        linters: [wrapcheck, gosec, errcheck]
+      - path: ^testdata/
+        linters: [errcheck, revive, unused, gosec, wrapcheck]
+formatters:
+  enable:
+    - gofmt

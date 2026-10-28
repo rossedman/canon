@@ -69,7 +69,7 @@ type Result struct {
 
 // Run checks paths under root and decides whether to block. Paths outside
 // root are ignored, so an edit to a scratch file never trips the hook.
-func Run(ctx context.Context, e *engine.Engine, root string, paths []string, min findings.Severity) (*Result, error) {
+func Run(ctx context.Context, e *engine.Engine, root string, paths []string, threshold findings.Severity) (*Result, error) {
 	abs, err := filepath.Abs(root)
 	if err != nil {
 		return nil, fmt.Errorf("resolve root: %w", err)
@@ -88,9 +88,9 @@ func Run(ctx context.Context, e *engine.Engine, root string, paths []string, min
 	if len(inside) == 0 {
 		return &Result{}, nil
 	}
-	res, err := e.Check(ctx, engine.CheckRequest{Root: abs, Paths: inside, MinSeverity: min})
+	res, err := e.Check(ctx, engine.CheckRequest{Root: abs, Paths: inside, MinSeverity: threshold})
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("hook check: %w", err)
 	}
 	out := &Result{Check: res}
 	if len(res.Findings) == 0 {

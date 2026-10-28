@@ -9,6 +9,14 @@ import (
 	"github.com/rossedman/canon/internal/findings"
 )
 
+// flush writes a rendered block to w.
+func flush(w io.Writer, b *strings.Builder) error {
+	if _, err := io.WriteString(w, b.String()); err != nil {
+		return fmt.Errorf("write output: %w", err)
+	}
+	return nil
+}
+
 // severityStyle returns the label style for a severity.
 func severityStyle(s findings.Severity) string {
 	switch s {
@@ -46,8 +54,7 @@ func Findings(w io.Writer, fs []findings.Finding) error {
 			fmt.Fprintf(&b, "  %s %s\n", Muted.Render("fix:"), strings.Join(lines, "\n       "))
 		}
 	}
-	_, err := io.WriteString(w, b.String())
-	return err
+	return flush(w, &b)
 }
 
 // summaryLine renders the error/warning/suggestion counts.
@@ -87,8 +94,7 @@ func Check(w io.Writer, r *engine.CheckResult) error {
 	}
 	skipped(&b, r.Skipped)
 	fmt.Fprintf(&b, "%s %s in %s (profile %s)\n", Title.Render("canon"), summaryLine(r.Summary), plural(r.FilesChecked, "file"), r.Profile)
-	_, err := io.WriteString(w, b.String())
-	return err
+	return flush(w, &b)
 }
 
 // Decide prints the records that answer a question.
@@ -107,8 +113,7 @@ func Decide(w io.Writer, r *engine.DecideResult) error {
 			fmt.Fprintf(&b, "  %s %s\n", Muted.Render("exceptions:"), strings.Join(strings.Fields(m.Exceptions), " "))
 		}
 	}
-	_, err := io.WriteString(w, b.String())
-	return err
+	return flush(w, &b)
 }
 
 // indent prefixes every line with two spaces.
@@ -136,8 +141,7 @@ func Explain(w io.Writer, r *engine.ExplainResult) error {
 	for _, s := range r.SupersededBy {
 		fmt.Fprintf(&b, "%s %s %s\n", WarnText.Render("superseded by"), s.ID, s.Title)
 	}
-	_, err := io.WriteString(w, b.String())
-	return err
+	return flush(w, &b)
 }
 
 // Profile prints the detected profile, its records and missing checkers.
@@ -156,8 +160,7 @@ func Profile(w io.Writer, r *engine.ProfileResult) error {
 		}
 		fmt.Fprintf(&b, "  %-14s %s\n", c.Name, state)
 	}
-	_, err := io.WriteString(w, b.String())
-	return err
+	return flush(w, &b)
 }
 
 // Review prints findings and concerns for a change.
@@ -185,8 +188,7 @@ func Review(w io.Writer, r *engine.ReviewResult) error {
 	if len(r.RecordsTouched) > 0 {
 		fmt.Fprintf(&b, "%s %s\n", Muted.Render("records touched:"), strings.Join(r.RecordsTouched, ", "))
 	}
-	_, err := io.WriteString(w, b.String())
-	return err
+	return flush(w, &b)
 }
 
 // Scaffold prints the files a scaffold wrote or would write.
@@ -216,8 +218,7 @@ func Scaffold(w io.Writer, r *engine.ScaffoldResult) error {
 	for _, n := range r.Next {
 		fmt.Fprintf(&b, "%s %s\n", Muted.Render("next:"), Code.Render(n))
 	}
-	_, err := io.WriteString(w, b.String())
-	return err
+	return flush(w, &b)
 }
 
 // Lint prints canon validation problems.
@@ -235,6 +236,5 @@ func Lint(w io.Writer, ps []engine.Problem, records int) error {
 	} else {
 		fmt.Fprintf(&b, "%s\n", ErrorText.Render(plural(len(ps), "problem")))
 	}
-	_, err := io.WriteString(w, b.String())
-	return err
+	return flush(w, &b)
 }

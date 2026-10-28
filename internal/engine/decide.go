@@ -76,13 +76,13 @@ type ExplainRequest struct {
 
 // ExplainResult is a record in full, with what enforces it and what it replaced.
 type ExplainResult struct {
-	Rule         *rules.Rule      `json:"rule,omitempty"`
-	Record       *records.Record  `json:"record"`
-	Why          string           `json:"why"`
-	Markdown     string           `json:"markdown"`
-	Rules        []*rules.Rule    `json:"rules"`
-	Supersedes   []RecordRef      `json:"supersedes,omitempty"`
-	SupersededBy []RecordRef      `json:"superseded_by,omitempty"`
+	Rule         *rules.Rule     `json:"rule,omitempty"`
+	Record       *records.Record `json:"record"`
+	Why          string          `json:"why"`
+	Markdown     string          `json:"markdown"`
+	Rules        []*rules.Rule   `json:"rules"`
+	Supersedes   []RecordRef     `json:"supersedes,omitempty"`
+	SupersededBy []RecordRef     `json:"superseded_by,omitempty"`
 }
 
 // ErrNotFound is returned for an unknown rule or record.

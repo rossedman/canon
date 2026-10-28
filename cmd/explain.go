@@ -23,7 +23,7 @@ var explainCmd = &cobra.Command{
 		}
 		res, err := e.Explain(e.Resolve(args[0]))
 		if err != nil {
-			return err
+			return fmt.Errorf("explain: %w", err)
 		}
 		if viper.GetBool("explain.json") {
 			return writeJSON(cmd.OutOrStdout(), res)

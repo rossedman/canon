@@ -1,14 +1,24 @@
-# Binaries and build output
-/bin/
-/dist/
+# Go (from github/gitignore Go.gitignore)
 *.exe
+*.exe~
+*.dll
+*.so
+*.dylib
 *.test
 *.out
-!internal/checkers/testdata/*.out
+coverage.*
+!coverage.go
+*.coverprofile
+profile.cov
+go.work
+go.work.sum
+.env
 
-# Coverage and benchmarks
-coverage.out
-coverage.hand.out
+# Build output
+/bin/
+/dist/
+
+# Benchmarks saved by make bench
 /bench/
 
 # Docs site build output (anchored so docs/assets/site/ is kept)
@@ -20,6 +30,6 @@ coverage.hand.out
 *.swp
 .DS_Store
 
-# Python tooling used for docs
+# Python tooling used for the docs build
 .venv/
 __pycache__/

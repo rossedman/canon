@@ -41,7 +41,7 @@ projects that already follow the standards. It runs as an MCP server
 func init() {
 	cobra.OnInitialize(initConfig)
 	pf := rootCmd.PersistentFlags()
-	pf.StringVar(&cfgFile, "config", "", "config file (default: $XDG_CONFIG_HOME/canon/config.yaml, ~/.canon.yaml or ./.canon.yaml)")
+	pf.StringVar(&cfgFile, "config", "", "config file (default: first of $XDG_CONFIG_HOME/canon/config.yaml, ~/.canon.yaml, ./.canon.yaml)")
 	pf.String("canon-dir", "", "load the canon from this directory instead of the embedded one")
 	pf.String("root", ".", "repository root that paths are relative to")
 	pf.String("log-level", "warn", "log level: debug, info, warn or error")
@@ -63,29 +63,42 @@ func mustBind(key string, f *pflag.Flag) {
 
 // initConfig resolves config as flag, then env, then file.
 func initConfig() {
+	if cfgFile == "" {
+		cfgFile = findConfig()
+	}
 	if cfgFile != "" {
 		viper.SetConfigFile(cfgFile)
-	} else {
-		if dir, err := os.UserConfigDir(); err == nil {
-			viper.AddConfigPath(filepath.Join(dir, "canon"))
+		if err := viper.ReadInConfig(); err != nil {
+			fmt.Fprintf(os.Stderr, "canon: read config: %v\n", err)
 		}
-		if home, err := os.UserHomeDir(); err == nil {
-			viper.AddConfigPath(home)
-		}
-		viper.AddConfigPath(".")
-		viper.SetConfigName("config")
-		viper.SetConfigType("yaml")
 	}
 	viper.SetEnvPrefix("CANON")
 	viper.SetEnvKeyReplacer(strings.NewReplacer("-", "_", ".", "_"))
 	viper.AutomaticEnv()
-	if err := viper.ReadInConfig(); err != nil {
-		var notFound viper.ConfigFileNotFoundError
-		if !errors.As(err, &notFound) && cfgFile != "" {
-			fmt.Fprintf(os.Stderr, "canon: read config: %v\n", err)
+	slog.SetDefault(ui.NewLogger(os.Stderr, logLevel(viper.GetString("log-level"))))
+}
+
+// configCandidates lists where canon looks for a config file, in order:
+// $XDG_CONFIG_HOME/canon/config.yaml, ~/.canon.yaml, then ./.canon.yaml.
+func configCandidates() []string {
+	var out []string
+	if dir, err := os.UserConfigDir(); err == nil {
+		out = append(out, filepath.Join(dir, "canon", "config.yaml"))
+	}
+	if home, err := os.UserHomeDir(); err == nil {
+		out = append(out, filepath.Join(home, ".canon.yaml"))
+	}
+	return append(out, ".canon.yaml")
+}
+
+// findConfig returns the first config file that exists, or "".
+func findConfig() string {
+	for _, p := range configCandidates() {
+		if st, err := os.Stat(p); err == nil && !st.IsDir() {
+			return p
 		}
 	}
-	slog.SetDefault(ui.NewLogger(os.Stderr, logLevel(viper.GetString("log-level"))))
+	return ""
 }
 
 // logLevel parses a log level name, defaulting to warn.
@@ -106,7 +119,16 @@ func (e exitError) Error() string { return fmt.Sprintf("exit status %d", e.code)
 
 // Execute runs the root command through fang and exits with the right code.
 func Execute() {
-	err := fang.Execute(context.Background(), rootCmd,
+	if code := execute(context.Background()); code != 0 {
+		os.Exit(code)
+	}
+}
+
+// execute runs the root command and returns the process exit code. An
+// exitError carries its own code and prints nothing; any other error is
+// printed by fang and exits 1.
+func execute(ctx context.Context) int {
+	err := fang.Execute(ctx, rootCmd,
 		fang.WithVersion(version), fang.WithCommit(commit),
 		fang.WithErrorHandler(func(w io.Writer, styles fang.Styles, err error) {
 			var ee exitError
@@ -118,10 +140,11 @@ func Execute() {
 	var ee exitError
 	switch {
 	case errors.As(err, &ee):
-		os.Exit(ee.code)
+		return ee.code
 	case err != nil:
-		os.Exit(1)
+		return 1
 	}
+	return 0
 }
 
 // loadEngine loads the canon from --canon-dir or the embedded copy.
@@ -133,15 +156,24 @@ func loadEngine() (*engine.Engine, error) {
 		}
 		return e, nil
 	}
-	return engine.Default()
+	e, err := engine.Default()
+	if err != nil {
+		return nil, fmt.Errorf("load embedded canon: %w", err)
+	}
+	return e, nil
 }
 
 // repoRoot returns the --root flag.
 func repoRoot() string {
-	if r := viper.GetString("root"); r != "" {
-		return r
+	return repoRootWith(viper.GetString("root"))
+}
+
+// repoRootWith defaults an empty root to the current directory.
+func repoRootWith(r string) string {
+	if r == "" {
+		return "."
 	}
-	return "."
+	return r
 }
 
 // writeJSON prints v as indented JSON.

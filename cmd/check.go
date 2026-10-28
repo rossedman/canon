@@ -22,9 +22,9 @@ the record it enforces, and why. Exits 1 when a finding reaches --fail-on.`,
   canon check --changed-only --sarif > canon.sarif
   canon check cmd/ --scope go --min-severity suggestion`,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		min, err := findings.ParseSeverity(viper.GetString("check.min-severity"))
+		minSev, err := findings.ParseSeverity(viper.GetString("check.min-severity"))
 		if err != nil {
-			return err
+			return fmt.Errorf("--min-severity: %w", err)
 		}
 		e, err := loadEngine()
 		if err != nil {
@@ -34,13 +34,13 @@ the record it enforces, and why. Exits 1 when a finding reaches --fail-on.`,
 			Root:        repoRoot(),
 			Paths:       args,
 			Scope:       viper.GetStringSlice("check.scope"),
-			MinSeverity: min,
+			MinSeverity: minSev,
 			ChangedOnly: viper.GetBool("check.changed-only"),
 			Base:        viper.GetString("check.base"),
 			Profile:     viper.GetString("check.profile"),
 		})
 		if err != nil {
-			return err
+			return fmt.Errorf("check: %w", err)
 		}
 		out := cmd.OutOrStdout()
 		switch {
@@ -90,7 +90,7 @@ func writeSARIF(w interface{ Write([]byte) (int, error) }, e *engine.Engine, fs 
 	}
 	b, err := findings.SARIF(fs, infos, version)
 	if err != nil {
-		return err
+		return fmt.Errorf("build sarif: %w", err)
 	}
 	if _, err := w.Write(append(b, '\n')); err != nil {
 		return fmt.Errorf("write sarif: %w", err)
@@ -103,11 +103,11 @@ func failOn(threshold string, fs []findings.Finding) error {
 	if threshold == "none" {
 		return nil
 	}
-	min, err := findings.ParseSeverity(threshold)
+	minSev, err := findings.ParseSeverity(threshold)
 	if err != nil {
 		return fmt.Errorf("--fail-on: %w", err)
 	}
-	if len(findings.Filter(fs, min)) > 0 {
+	if len(findings.Filter(fs, minSev)) > 0 {
 		return exitError{code: 1}
 	}
 	return nil

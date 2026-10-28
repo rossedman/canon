@@ -69,6 +69,7 @@ func (p *diffParser) start() {
 	p.files = append(p.files, FileDiff{Status: Modified})
 	p.cur = &p.files[len(p.files)-1]
 	p.sawPlus = false
+	p.oldN, p.newN = 0, 0
 	p.oldLeft, p.newLeft = 0, 0
 }
 
@@ -112,7 +113,10 @@ func (p *diffParser) line(line string) {
 		p.cur.Path = strings.TrimPrefix(line, "rename to ")
 	case strings.HasPrefix(line, "@@"):
 		if h, ok := parseHunk(line); ok {
-			p.oldN, p.newN, p.oldLeft, p.newLeft = h.oldStart, h.newStart, h.oldCount, h.newCount
+			// Hunks run in order; a header that jumps backwards is malformed,
+			// so numbering continues from where the last hunk ended.
+			p.oldN, p.newN = max(h.oldStart, p.oldN), max(h.newStart, p.newN)
+			p.oldLeft, p.newLeft = h.oldCount, h.newCount
 		}
 	}
 }

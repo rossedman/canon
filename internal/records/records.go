@@ -151,9 +151,9 @@ func splitSections(body string) (map[string]string, []string) {
 		if strings.HasPrefix(trimmed, "```") || strings.HasPrefix(trimmed, "~~~") {
 			inFence = !inFence
 		}
-		if !inFence && strings.HasPrefix(line, "## ") {
+		if heading := strings.TrimSpace(strings.TrimPrefix(line, "## ")); !inFence && strings.HasPrefix(line, "## ") && heading != "" {
 			flush()
-			cur = strings.TrimSpace(strings.TrimPrefix(line, "## "))
+			cur = heading
 			if _, dup := sections[cur]; !dup {
 				order = append(order, cur)
 			}

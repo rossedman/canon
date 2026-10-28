@@ -25,9 +25,9 @@ is computed against --base, or read from --diff-file (- for stdin).`,
   git diff main | canon review --diff-file -`,
 	Args: cobra.NoArgs,
 	RunE: func(cmd *cobra.Command, _ []string) error {
-		min, err := findings.ParseSeverity(viper.GetString("review.min-severity"))
+		minSev, err := findings.ParseSeverity(viper.GetString("review.min-severity"))
 		if err != nil {
-			return err
+			return fmt.Errorf("--min-severity: %w", err)
 		}
 		diff, err := readDiff(cmd.InOrStdin(), viper.GetString("review.diff-file"))
 		if err != nil {
@@ -37,9 +37,9 @@ is computed against --base, or read from --diff-file (- for stdin).`,
 		if err != nil {
 			return err
 		}
-		res, err := e.Review(cmd.Context(), engine.ReviewRequest{Root: repoRoot(), Base: viper.GetString("review.base"), Diff: diff, MinSeverity: min})
+		res, err := e.Review(cmd.Context(), engine.ReviewRequest{Root: repoRoot(), Base: viper.GetString("review.base"), Diff: diff, MinSeverity: minSev})
 		if err != nil {
-			return err
+			return fmt.Errorf("review: %w", err)
 		}
 		if viper.GetBool("review.json") {
 			if err := writeJSON(cmd.OutOrStdout(), res); err != nil {

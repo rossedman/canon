@@ -40,7 +40,7 @@ func (g GolangciLint) Run(ctx context.Context, run Runner, req Request) ([]Issue
 	}
 	res, err := run.Run(ctx, req.Root, g.Binary(), append(args, pkgs...)...)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("golangci-lint: %w", err)
 	}
 	issues, perr := ParseGolangci(req.Root, res.Stdout)
 	if perr != nil || res.ExitCode != 0 && len(issues) == 0 {
@@ -135,7 +135,7 @@ func (r Ruff) Run(ctx context.Context, run Runner, req Request) ([]Issue, error)
 	}
 	res, err := run.Run(ctx, req.Root, r.Binary(), append(args, req.Files...)...)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("ruff: %w", err)
 	}
 	issues, perr := ParseRuff(req.Root, res.Stdout)
 	if perr != nil || res.ExitCode != 0 {
@@ -209,7 +209,7 @@ func (h Hadolint) Run(ctx context.Context, run Runner, req Request) ([]Issue, er
 	}
 	res, err := run.Run(ctx, req.Root, h.Binary(), append(args, req.Files...)...)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("hadolint: %w", err)
 	}
 	issues, perr := ParseHadolint(req.Root, res.Stdout)
 	if perr != nil || res.ExitCode != 0 && len(issues) == 0 {
@@ -265,7 +265,7 @@ func (t TFLint) Run(ctx context.Context, run Runner, req Request) ([]Issue, erro
 	}
 	res, err := run.Run(ctx, req.Root, t.Binary(), args...)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("tflint: %w", err)
 	}
 	issues, perr := ParseTFLint(req.Root, res.Stdout)
 	if perr != nil {
@@ -339,7 +339,7 @@ func (c Checkov) Run(ctx context.Context, run Runner, req Request) ([]Issue, err
 	args := []string{"-d", ".", "--framework", "terraform", "--output", "json", "--quiet", "--compact", "--soft-fail", "--skip-download"}
 	res, err := run.Run(ctx, req.Root, c.Binary(), args...)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("checkov: %w", err)
 	}
 	issues, perr := ParseCheckov(req.Root, res.Stdout)
 	if perr != nil {
@@ -420,7 +420,7 @@ func (y Yamllint) Run(ctx context.Context, run Runner, req Request) ([]Issue, er
 	}
 	res, err := run.Run(ctx, req.Root, y.Binary(), append(args, req.Files...)...)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("yamllint: %w", err)
 	}
 	issues := ParseYamllint(req.Root, res.Stdout)
 	if res.ExitCode > 1 || res.ExitCode == 1 && len(issues) == 0 {

@@ -53,15 +53,15 @@ func LoadDir(dir string) (*Engine, error) {
 func Load(fsys fs.FS) (*Engine, error) {
 	set, err := records.Load(fsys, "records")
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("load canon: %w", err)
 	}
 	reg, err := rules.Load(fsys, "rules/rules.yaml")
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("load canon: %w", err)
 	}
 	ps, err := profiles.Load(fsys, "profiles")
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("load canon: %w", err)
 	}
 	principles, err := fs.ReadFile(fsys, "principles.md")
 	if err != nil {

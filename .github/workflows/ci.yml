@@ -1,0 +1,115 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: go.mod
+      - uses: golangci/golangci-lint-action@ba0d7d2ec06a0ea1cb5fa41b2e4a3ab91d21278a # v9.3.0
+        with:
+          version: v2.15.0
+      - name: shellcheck
+        run: shellcheck tools/*.sh docs/assets/render.sh
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: go.mod
+      - name: Test with race detector and coverage gate
+        run: make cover-gate
+      - name: Benchmarks smoke run
+        run: make bench-smoke
+
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: go.mod
+      - name: One cobra command per file
+        run: make check-cmds
+      - name: Doc comments on every function
+        run: make doccheck
+      - name: Canon is valid
+        run: make canon-lint
+      - name: Canon checks itself
+        run: go run . check --fail-on error
+      - name: Generated docs are current
+        run: make docs && git diff --exit-code -- docs/reference
+      - name: govulncheck
+        run: go run golang.org/x/vuln/cmd/govulncheck@v1.9.0 ./...
+
+  fuzz:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        target:
+          - pkg: ./internal/glob
+            fn: FuzzMatch
+          - pkg: ./internal/records
+            fn: FuzzParse
+          - pkg: ./internal/search
+            fn: FuzzTokenize
+          - pkg: ./internal/checkers
+            fn: FuzzParseToolOutput
+          - pkg: ./internal/checkers
+            fn: FuzzParseDockerfile
+          - pkg: ./internal/checkers
+            fn: FuzzPinned
+          - pkg: ./internal/review
+            fn: FuzzParseDiff
+          - pkg: ./internal/hook
+            fn: FuzzParseInput
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: go.mod
+      - name: Fuzz ${{ matrix.target.fn }} for 30s
+        env:
+          PKG: ${{ matrix.target.pkg }}
+          FN: ${{ matrix.target.fn }}
+        run: go test -run='^$' -fuzz="^${FN}\$" -fuzztime=30s "$PKG"
+
+  release-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: go.mod
+      - uses: goreleaser/goreleaser-action@a4f02ab5355a589de60d917a659ce617ed19b3de # v7.3.0
+        with:
+          version: "~> v2"
+          args: check

@@ -29,7 +29,7 @@ var profileCmd = &cobra.Command{
 		}
 		res, err := e.Profile(p)
 		if err != nil {
-			return err
+			return fmt.Errorf("profile: %w", err)
 		}
 		if viper.GetBool("profile.json") {
 			return writeJSON(cmd.OutOrStdout(), res)

@@ -26,16 +26,16 @@ suits git pre-commit hooks.`,
   # .git/hooks/pre-commit
   canon hook $(git diff --cached --name-only --diff-filter=ACM)`,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		min, err := findings.ParseSeverity(viper.GetString("hook.min-severity"))
+		minSev, err := findings.ParseSeverity(viper.GetString("hook.min-severity"))
 		if err != nil {
-			return err
+			return fmt.Errorf("--min-severity: %w", err)
 		}
 		paths := args
 		root := repoRoot()
 		if len(paths) == 0 {
 			in, err := hook.ParseInput(cmd.InOrStdin())
 			if err != nil {
-				return err
+				return fmt.Errorf("hook: %w", err)
 			}
 			paths = in.Paths()
 			if in.Cwd != "" && !cmd.Flags().Changed("root") && os.Getenv("CANON_ROOT") == "" {
@@ -46,9 +46,9 @@ suits git pre-commit hooks.`,
 		if err != nil {
 			return err
 		}
-		res, err := hook.Run(cmd.Context(), e, root, paths, min)
+		res, err := hook.Run(cmd.Context(), e, root, paths, minSev)
 		if err != nil {
-			return err
+			return fmt.Errorf("hook: %w", err)
 		}
 		if res.Code != 0 {
 			if _, err := fmt.Fprint(cmd.ErrOrStderr(), res.Message); err != nil {

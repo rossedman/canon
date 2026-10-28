@@ -38,11 +38,11 @@ type File struct {
 
 // Plan is a rendered template, ready to write.
 type Plan struct {
-	Template *Template        `json:"template"`
-	Root     string           `json:"root"`
+	Template *Template         `json:"template"`
+	Root     string            `json:"root"`
 	Vars     map[string]string `json:"vars"`
-	Files    []File           `json:"files"`
-	Next     []string         `json:"next,omitempty"`
+	Files    []File            `json:"files"`
+	Next     []string          `json:"next,omitempty"`
 }
 
 // namePattern is what a scaffold name may look like.
@@ -172,6 +172,7 @@ func Render(fsys fs.FS, kind, name string, vars map[string]string) (*Plan, error
 	if err != nil {
 		return nil, fmt.Errorf("render %s: %w", kind, err)
 	}
+	slices.SortFunc(plan.Files, func(a, b File) int { return strings.Compare(a.Path, b.Path) })
 	return plan, nil
 }
 

@@ -120,7 +120,7 @@ func (p *Profile) Resolve(set *records.Set) []*records.Record {
 		if !r.InForce() || slices.Contains(p.Exclude, r.ID) {
 			continue
 		}
-		if r.HasScope(p.Scopes) || slices.Contains(p.Records, r.ID) {
+		if len(p.Scopes) > 0 && r.HasScope(p.Scopes) || slices.Contains(p.Records, r.ID) {
 			out = append(out, r)
 		}
 	}

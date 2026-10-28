@@ -25,7 +25,7 @@ var serveCmd = &cobra.Command{
 		}
 		srv, err := mcp.New(e, repoRoot(), version)
 		if err != nil {
-			return err
+			return fmt.Errorf("start mcp server: %w", err)
 		}
 		if addr := viper.GetString("serve.http"); addr != "" {
 			slog.Info("serving MCP over streamable HTTP", "addr", addr)

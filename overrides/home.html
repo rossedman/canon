@@ -1,0 +1,215 @@
+{% extends "main.html" %}
+
+{% set gh = "https://github.com/rossedman/canon" %}
+{% set install = "go install github.com/rossedman/canon@latest" %}
+
+{% block tabs %}
+{{ super() }}
+<div class="lp">
+
+  <section class="lp-hero">
+    <div class="lp-grid" aria-hidden="true"></div>
+    <div class="lp-wrap lp-hero__inner">
+      <div>
+        <img class="lp-hero__logo" src="{{ 'assets/site/logo.svg' | url }}" alt="">
+        <p class="lp-kicker">rossedman/canon</p>
+        <h1 class="lp-title">Your standards,<br><span>as agent tools.</span></h1>
+        <p class="lp-tagline">canon turns decision records into an MCP server, a CLI and a hook, so your coding agent checks its work and asks "how do we do X". <b>Every finding says why.</b></p>
+        <div class="lp-install">
+          <span class="lp-install__prompt">$</span>
+          <code>{{ install }}</code>
+          <button class="lp-copy" data-copy="{{ install }}" aria-label="Copy install command">
+            {% include ".icons/material/content-copy.svg" %}
+          </button>
+        </div>
+        <div class="lp-cta">
+          <a class="lp-btn lp-btn--primary" href="{{ 'getting-started/' | url }}">Get started {% include ".icons/material/arrow-right.svg" %}</a>
+          <a class="lp-btn" href="{{ 'guides/concepts/' | url }}">{% include ".icons/material/cog-outline.svg" %} How it works</a>
+        </div>
+      </div>
+
+      <div class="lp-term" aria-label="A terminal running canon">
+        <div class="lp-term__bar"><i></i><i></i><i></i><span>~/repo</span></div>
+        <div class="lp-term__body" data-typing>
+          <div><span class="p">$</span> <span class="c" data-type>canon check</span></div>
+          <div><span class="c">Dockerfile:6</span> <span class="e">error</span> Final stage uses debian:bookworm</div>
+          <div>  <span class="w">canon-final-stage-base</span> <span class="p">→</span> <span class="ok">containers-distroless-base</span></div>
+          <div>  <span class="d">Runtime images carry no shell or package manager.</span></div>
+          <div>  <span class="d">fix:</span> FROM gcr.io/distroless/static-debian12:nonroot</div>
+          <div><span class="p">$</span> <span class="c" data-type>canon profile</span></div>
+          <div><span class="i">profile go-cli</span></div>
+          <div><span class="d">19 records in force</span><span class="lp-caret"></span></div>
+        </div>
+      </div>
+    </div>
+
+    <ul class="lp-wrap lp-stats">
+      <li><b>25</b><span>decision records</span></li>
+      <li><b>21</b><span>rules mapped to records</span></li>
+      <li><b>6</b><span>MCP tools</span></li>
+      <li><b>7</b><span>checkers, linters included</span></li>
+    </ul>
+  </section>
+
+  <section class="lp-section" id="problem">
+    <div class="lp-wrap lp-split">
+      <div>
+        <p class="lp-eyebrow">The problem</p>
+        <h2>Agents guess.<br><span>Your standards don't.</span></h2>
+        <p class="lp-lede">Standards live in wikis and review comments, so an agent writing code at 2am never reads them. canon puts each one behind a tool the agent calls mid-task, and the answer always carries the reasoning.</p>
+        <ul class="lp-points">
+          <li>{% include ".icons/material/check-decagram-outline.svg" %} Records are the single source of truth</li>
+          <li>{% include ".icons/material/check-decagram-outline.svg" %} Machines check, people decide</li>
+          <li>{% include ".icons/material/check-decagram-outline.svg" %} Exceptions are written down, not guessed</li>
+        </ul>
+      </div>
+      <div class="lp-stack">
+        <article class="lp-panel" aria-label="A finding from the Claude Code hook">
+          <div class="lp-panel__head">
+            <span class="lp-panel__id">canon hook</span><span class="lp-pill lp-pill--bad">error</span>
+            <span class="lp-panel__meta">exit 2, agent keeps working</span>
+          </div>
+          <h3>Final stage sets no USER, so it runs as root</h3>
+          <div class="lp-panel__sub">Dockerfile:6 · canon-final-stage-user → containers-non-root</div>
+          <div class="lp-quote lp-quote--ok">A process that escapes a non-root container starts with no privileges on the host.<small>the record's summary, returned as the finding's why</small></div>
+          <div class="lp-well">fix: USER 65532:65532</div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="lp-section lp-section--alt">
+    <div class="lp-wrap">
+      <p class="lp-eyebrow">Core concepts</p>
+      <h2>Records, rules, profiles.<br><span>Nothing else to learn.</span></h2>
+      <p class="lp-lede lp-lede--center">A record says what you decided and why. A rule maps a linter's output to a record. A profile says which records apply to which kind of repo.</p>
+      <div class="lp-pillars">
+        <article class="lp-pillar" style="--accent: var(--brand)">
+          <h3>Record</h3><div class="when">Markdown + YAML frontmatter</div>
+          <p>The decision, its context and its exceptions. The summary becomes the "why" in findings.</p>
+          <pre><code>id: go-errors-wrap
+status: accepted
+strength: must
+rules: [golangci-errors]</code></pre>
+        </article>
+        <article class="lp-pillar" style="--accent: var(--warn)">
+          <h3>Rule</h3><div class="when">canon/rules/rules.yaml</div>
+          <p>Ties a checker's codes to a record. A finding without a rule is never reported.</p>
+          <pre><code>- id: golangci-errors
+  record: go-errors-wrap
+  checker: golangci-lint
+  codes: [wrapcheck, errorlint]</code></pre>
+        </article>
+        <article class="lp-pillar" style="--accent: var(--info)">
+          <h3>Profile</h3><div class="when">canon/profiles/*.yaml</div>
+          <p>Detects the kind of repo and selects the scopes of records in force.</p>
+          <pre><code>name: go-cli
+detect:
+  all: [go.mod, cmd/]
+scopes: [go, containers, ci, oss, yaml]</code></pre>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="lp-section">
+    <div class="lp-wrap">
+      <p class="lp-eyebrow">Why canon</p>
+      <h2>Opinions with receipts.<br><span>Checked, not nagged.</span></h2>
+      <div class="lp-features">
+        {% for icon, title, body in [
+          ("source-branch", "Four front doors, one engine", "MCP server, CLI, Claude Code hook and CI all run the same checks, so the agent, the laptop and the pipeline agree."),
+          ("comment-question-outline", "Every finding says why", "Each finding carries its rule, the record it enforces and the reason, with a fix when one is known."),
+          ("wrench-outline", "Wraps the linters you know", "golangci-lint, ruff, hadolint, tflint, checkov and yamllint, plus canon's own checks for what they miss."),
+          ("radar", "Knows your repo", "Six profiles detect go-cli, go-service, go-library, py-service, tf-module or generic, and pick the records in force."),
+          ("file-tree-outline", "Starts projects right", "Six scaffold kinds. Dry run by default, never overwrites, and the result is checked before it is reported."),
+          ("shield-check-outline", "Releases you can verify", "Archives ship with a keyless cosign signature over checksums.txt, tied to the release workflow."),
+        ] %}
+        <article class="lp-card">
+          <div class="lp-icon">{% include ".icons/material/" ~ icon ~ ".svg" %}</div>
+          <h3>{{ title }}</h3>
+          <p>{{ body }}</p>
+        </article>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <section class="lp-section lp-section--alt" id="quick-start">
+    <div class="lp-wrap lp-split">
+      <div>
+        <p class="lp-eyebrow">Quick start</p>
+        <h2>Standards in your agent<br><span>in three commands.</span></h2>
+        <p class="lp-lede">You need Go 1.27 or newer to install from source. Linters are optional: canon reports which are missing and skips them.</p>
+        <a class="lp-btn" href="{{ 'getting-started/' | url }}">{% include ".icons/material/book-open-page-variant-outline.svg" %} Full getting-started guide</a>
+      </div>
+      <ol class="lp-steps">
+        <li>
+          <h4>Install</h4>
+          <pre class="lp-code"><button class="lp-copy" aria-label="Copy">{% include ".icons/material/content-copy.svg" %}</button><code><span class="p">$</span> {{ install }}</code></pre>
+        </li>
+        <li>
+          <h4>Give Claude Code the tools</h4>
+          <p>Registers the MCP server over stdio.</p>
+          <pre class="lp-code"><button class="lp-copy" aria-label="Copy">{% include ".icons/material/content-copy.svg" %}</button><code><span class="p">$</span> claude mcp add canon -- canon serve</code></pre>
+        </li>
+        <li>
+          <h4>Run your first check</h4>
+          <p>From the root of any repository.</p>
+          <pre class="lp-code"><button class="lp-copy" aria-label="Copy">{% include ".icons/material/content-copy.svg" %}</button><code><span class="p">$</span> canon check</code></pre>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="lp-section">
+    <div class="lp-wrap">
+      <p class="lp-eyebrow">How it works</p>
+      <h2>One canon in.<br><span>Four doors out.</span></h2>
+      <figure class="lp-figure">
+        <a href="{{ 'assets/how-it-works.png' | url }}"><img width="2560" height="1440" src="{{ 'assets/how-it-works.png' | url }}" alt="Decision records, rules and profiles feed one engine, which runs the checkers and is exposed as an MCP server, a CLI, a Claude Code hook and a CI check that uploads SARIF." loading="lazy"></a>
+        <figcaption>Tap to open the full-size diagram</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="lp-section lp-section--alt">
+    <div class="lp-wrap">
+      <p class="lp-eyebrow">Documentation</p>
+      <h2>Go deeper.</h2>
+      <div class="lp-docs">
+        {% for path, name, blurb in [
+          ("getting-started/", "Getting started", "Install, verify, first check"),
+          ("configuration/", "Configuration", "Flags, environment, config file"),
+          ("guides/concepts/", "Concepts", "Records, rules, profiles, findings"),
+          ("guides/writing-records/", "Writing records", "Format, frontmatter, canon lint"),
+          ("guides/mcp/", "MCP server", "Tools, resources and prompts"),
+          ("guides/hooks-and-ci/", "Hooks and CI", "Claude Code, pre-commit, SARIF"),
+          ("reference/commands/canon/", "Command reference", "Every command and flag"),
+          ("reference/records/", "Decision records", "All 25, with their reasons"),
+        ] %}
+        <a class="lp-doc" href="{{ path | url }}">
+          <b>{{ name }}</b><span>{{ blurb }}</span>
+          {% include ".icons/material/arrow-right.svg" %}
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <section class="lp-final">
+    <div class="lp-grid" aria-hidden="true"></div>
+    <div class="lp-wrap">
+      <img class="lp-final__logo" src="{{ 'assets/site/logo.svg' | url }}" alt="">
+      <h2>Write it down once.<br><span>Let the agent follow it.</span></h2>
+      <p class="lp-lede lp-lede--center">Free and open source under the Apache-2.0 license.</p>
+      <div class="lp-cta lp-cta--center">
+        <a class="lp-btn lp-btn--primary" href="{{ 'getting-started/' | url }}">Get started {% include ".icons/material/arrow-right.svg" %}</a>
+        <a class="lp-btn" href="{{ gh }}">{% include ".icons/material/source-repository.svg" %} View on GitHub</a>
+      </div>
+    </div>
+  </section>
+</div>
+{% endblock %}
+
+{% block content %}{% endblock %}

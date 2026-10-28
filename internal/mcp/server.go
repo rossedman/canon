@@ -155,7 +155,7 @@ func (s *Server) addTools(srv *sdk.Server) error {
 func (s *Server) check(ctx context.Context, _ *sdk.CallToolRequest, in CheckInput) (*sdk.CallToolResult, *engine.CheckResult, error) {
 	sev, err := findings.ParseSeverity(in.MinSeverity)
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, fmt.Errorf("min_severity: %w", err)
 	}
 	res, err := s.engine.Check(ctx, engine.CheckRequest{Root: s.root, Paths: in.Paths, Scope: in.Scope, MinSeverity: sev, ChangedOnly: in.ChangedOnly, Base: "origin/main"})
 	if err != nil {
@@ -244,7 +244,7 @@ func (s *Server) addResources(srv *sdk.Server) {
 				return nil, sdk.ResourceNotFoundError(req.Params.URI)
 			}
 			if err != nil {
-				return nil, err
+				return nil, fmt.Errorf("read %s: %w", req.Params.URI, err)
 			}
 			return jsonResource(req.Params.URI, v)
 		})

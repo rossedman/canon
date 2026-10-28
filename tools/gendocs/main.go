@@ -17,17 +17,23 @@ import (
 func main() {
 	out := flag.String("out", "docs/reference", "directory to write reference pages into")
 	flag.Parse()
+	if err := run(*out); err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
+	}
+}
+
+// run writes the command and record reference pages under out.
+func run(out string) error {
 	e, err := engine.Default()
 	if err != nil {
-		fmt.Fprintln(os.Stderr, err)
-		os.Exit(1)
+		return fmt.Errorf("load canon: %w", err)
 	}
-	if err := docgen.Commands(cmd.Root(), *out+"/commands"); err != nil {
-		fmt.Fprintln(os.Stderr, err)
-		os.Exit(1)
+	if err := docgen.Commands(cmd.Root(), out+"/commands"); err != nil {
+		return fmt.Errorf("command docs: %w", err)
 	}
-	if err := docgen.Records(e, *out+"/records"); err != nil {
-		fmt.Fprintln(os.Stderr, err)
-		os.Exit(1)
+	if err := docgen.Records(e, out+"/records"); err != nil {
+		return fmt.Errorf("record docs: %w", err)
 	}
+	return nil
 }

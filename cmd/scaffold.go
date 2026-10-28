@@ -36,7 +36,7 @@ and checks the result.`,
 			DryRun: !viper.GetBool("scaffold.write"),
 		})
 		if err != nil {
-			return err
+			return fmt.Errorf("scaffold: %w", err)
 		}
 		if viper.GetBool("scaffold.json") {
 			if err := writeJSON(cmd.OutOrStdout(), res); err != nil {

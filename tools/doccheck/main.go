@@ -3,8 +3,8 @@
 package main
 
 import (
-	"go/ast"
 	"fmt"
+	"go/ast"
 	"os"
 	"path"
 	"sort"
@@ -32,7 +32,7 @@ func main() {
 func check(patterns []string) ([]string, error) {
 	files, err := gofiles.Walk(patterns)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("doccheck: %w", err)
 	}
 	var out []string
 	pkgDoc := map[string]bool{}

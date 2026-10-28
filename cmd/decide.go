@@ -13,8 +13,8 @@ import (
 
 // decideCmd answers a question from the records.
 var decideCmd = &cobra.Command{
-	Use:     "decide <question...>",
-	Short:   `Answer a "how do we do X" question from decision records`,
+	Use:   "decide <question...>",
+	Short: `Answer a "how do we do X" question from decision records`,
 	Example: `  canon decide how do we handle errors in Go
   canon decide "which base image for a Go service?" --scope containers`,
 	Args: cobra.MinimumNArgs(1),
@@ -29,7 +29,7 @@ var decideCmd = &cobra.Command{
 			Limit:    viper.GetInt("decide.limit"),
 		})
 		if err != nil {
-			return err
+			return fmt.Errorf("decide: %w", err)
 		}
 		if viper.GetBool("decide.json") {
 			return writeJSON(cmd.OutOrStdout(), res)

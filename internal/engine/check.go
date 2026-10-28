@@ -87,11 +87,11 @@ func (e *Engine) Check(ctx context.Context, req CheckRequest) (*CheckResult, err
 		return nil, err
 	}
 	res.Profile = prof.Name
-	min := req.MinSeverity
-	if min == "" {
-		min = findings.Warning
+	threshold := req.MinSeverity
+	if threshold == "" {
+		threshold = findings.Warning
 	}
-	res.Findings = findings.Filter(res.Findings, min)
+	res.Findings = findings.Filter(res.Findings, threshold)
 	res.Summary = findings.Summarize(res.Findings)
 	return res, nil
 }
