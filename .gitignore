@@ -1,0 +1,35 @@
+# Go (from github/gitignore Go.gitignore)
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+coverage.*
+!coverage.go
+*.coverprofile
+profile.cov
+go.work
+go.work.sum
+.env
+
+# Build output
+/bin/
+/dist/
+
+# Benchmarks saved by make bench
+/bench/
+
+# Docs site build output (anchored so docs/assets/site/ is kept)
+/site/
+
+# Editors and OS
+.idea/
+.vscode/
+*.swp
+.DS_Store
+
+# Python tooling used for the docs build
+.venv/
+__pycache__/

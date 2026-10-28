@@ -1,0 +1,8 @@
+{
+  "type": "object",
+  "description": "Give exactly one of rule or record.",
+  "properties": {
+    "rule":   { "type": "string", "description": "A rule ID, as in a finding's rule field" },
+    "record": { "type": "string", "description": "A record ID, as in a finding's record field" }
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "type": "object",
+  "properties": {
+    "base": { "type": "string", "default": "origin/main" },
+    "diff": { "type": "string", "description": "Unified diff; if omitted, computed from base" }
+  }
+}

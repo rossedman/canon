@@ -1,0 +1,43 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="brand.css">
+<style>
+  body {
+    background:
+      radial-gradient(900px 440px at 14% 30%, rgba(232,163,61,0.17), transparent 70%),
+      radial-gradient(700px 420px at 95% 115%, rgba(63,185,127,0.08), transparent 70%),
+      var(--ink);
+  }
+  .grid { mask-image: linear-gradient(90deg, rgba(0,0,0,0.9), rgba(0,0,0,0.15)); }
+  .wrap { position: absolute; inset: 0; display: flex; align-items: center; padding: 0 56px 0 56px; gap: 32px; }
+  .logo { width: 140px; height: 140px; flex: none; filter: drop-shadow(0 18px 30px rgba(0,0,0,0.5)); }
+  .text { flex: 1; min-width: 0; }
+  .kicker { font-size: 20px; color: var(--dim); margin-bottom: 10px; }
+  h1 { font-size: 64px; font-weight: 800; letter-spacing: -3px; line-height: 1.02; white-space: nowrap; }
+  h1 span { color: var(--brand); }
+  p { margin-top: 14px; font-size: 22px; line-height: 1.4; color: var(--mist); }
+  p b { color: var(--cream); font-weight: 600; }
+  .term { width: 560px; flex: none; }
+  .term .body { font-size: 13px; line-height: 1.7; }
+</style></head>
+<body>
+  <div class="grid"></div>
+  <div class="wrap">
+    <img class="logo" src="../site/logo.svg" alt="">
+    <div class="text">
+      <div class="kicker mono">rossedman/canon</div>
+      <h1>can<span>on</span></h1>
+      <p>Your engineering standards,<br><b>as tools agents call.</b></p>
+    </div>
+    <div class="term mono">
+      <div class="bar"><i></i><i></i><i></i><span>~/repo</span></div>
+      <div class="body"><span class="p">$</span> <span class="c">canon check</span>
+<span class="c">Dockerfile:6</span> <span class="e">error</span> Final stage uses debian:bookworm
+  <span class="w">canon-final-stage-base</span> <span class="p">→</span> <span class="ok">containers-distroless-base</span>
+  <span class="d">Runtime images carry no shell or package manager.</span>
+  <span class="d">fix:</span> FROM gcr.io/distroless/static-debian12:nonroot
+<span class="c">Dockerfile:6</span> <span class="e">error</span> Final stage sets no USER, so it runs as root
+  <span class="w">canon-final-stage-user</span> <span class="p">→</span> <span class="ok">containers-non-root</span>
+  <span class="d">fix:</span> USER 65532:65532</div>
+    </div>
+  </div>
+</body></html>

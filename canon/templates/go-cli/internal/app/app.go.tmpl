@@ -1,0 +1,12 @@
+// Package app holds {{.name}}'s logic, kept apart from cobra so it is easy to test.
+package app
+
+import "fmt"
+
+// Greet returns a greeting for name.
+func Greet(name string) (string, error) {
+	if name == "" {
+		return "", fmt.Errorf("greet: name is empty")
+	}
+	return "hello, " + name, nil
+}

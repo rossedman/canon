@@ -1,0 +1,6 @@
+description: A GitHub Actions workflow with pinned actions and least privilege
+root: ""
+records: [ci-pin-actions-sha, ci-least-privilege, yaml-lint]
+vars: {}
+next:
+  - edit the run step, then push a branch to try it

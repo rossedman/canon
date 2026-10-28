@@ -1,0 +1,7 @@
+name: go-service
+description: A Go HTTP service with an OpenAPI spec
+priority: 40
+detect:
+  all: [go.mod]
+  any: [api/openapi.yaml, api/openapi.yml]
+scopes: [go, containers, ci, oss, yaml]

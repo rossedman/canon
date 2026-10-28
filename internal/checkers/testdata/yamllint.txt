@@ -1,0 +1,3 @@
+bad.yaml:2:1: [error] duplication of key "a" in mapping (key-duplicates)
+bad.yaml:3:5: [error] too many spaces after colon (colons)
+bad.yaml:3:9: [error] too few spaces after comma (commas)

@@ -1,0 +1,7 @@
+description: A multi-stage Dockerfile for a static Go binary on distroless
+root: ""
+records: [containers-distroless-base, containers-pin-base-images, containers-non-root, containers-dockerfile-hygiene]
+vars:
+  port: "8080"
+next:
+  - docker build -t {{.name}} .

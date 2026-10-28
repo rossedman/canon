@@ -1,0 +1,6 @@
+name: py-service
+description: A Python project managed with uv
+priority: 20
+detect:
+  any: [pyproject.toml, uv.lock]
+scopes: [python, containers, ci, oss, yaml]

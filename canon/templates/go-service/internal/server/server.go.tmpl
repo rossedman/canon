@@ -1,0 +1,21 @@
+// Package server implements the HTTP API described in api/openapi.yaml.
+// Generated types and interfaces land beside this file as *.gen.go.
+package server
+
+import (
+	"encoding/json"
+	"net/http"
+)
+
+// New returns the API's HTTP handler.
+func New() http.Handler {
+	mux := http.NewServeMux()
+	mux.HandleFunc("GET /healthz", healthz)
+	return mux
+}
+
+// healthz reports that the service is up.
+func healthz(w http.ResponseWriter, _ *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	_ = json.NewEncoder(w).Encode(map[string]string{"status": "ok"})
+}

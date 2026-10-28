@@ -1,0 +1,9 @@
+{
+  "type": "object",
+  "properties": {
+    "paths":    { "type": "array", "items": { "type": "string" }, "description": "Files or dirs; default repo root" },
+    "scope":    { "type": "array", "items": { "enum": ["go","python","containers","terraform","yaml","ci","oss"] } },
+    "min_severity": { "enum": ["error","warning","suggestion"], "default": "warning" },
+    "changed_only": { "type": "boolean", "default": false, "description": "Limit to files changed vs base branch" }
+  }
+}

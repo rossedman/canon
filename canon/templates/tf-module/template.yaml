@@ -1,0 +1,11 @@
+description: A Terraform module with typed variables, outputs and bounded versions
+root: "{{.name}}"
+records: [terraform-version-constraints, terraform-module-conventions, terraform-security-scan]
+vars:
+  provider: aws
+  provider_source: hashicorp/aws
+  provider_version: "~> 6.0"
+  terraform_version: ">= 1.9, < 2.0"
+next:
+  - terraform init -backend=false
+  - tflint --init && tflint

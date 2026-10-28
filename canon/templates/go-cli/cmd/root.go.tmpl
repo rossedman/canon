@@ -1,0 +1,55 @@
+// Package cmd wires {{.name}}'s commands. Each file defines one command.
+package cmd
+
+import (
+	"context"
+	"os"
+	"path/filepath"
+	"strings"
+
+	"charm.land/fang/v2"
+	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
+)
+
+// cfgFile is the --config flag.
+var cfgFile string
+
+// rootCmd is the base command.
+var rootCmd = &cobra.Command{
+	Use:   "{{.name}}",
+	Short: "{{.description}}",
+}
+
+// init registers persistent flags and config loading.
+func init() {
+	cobra.OnInitialize(initConfig)
+	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file")
+}
+
+// Execute runs the root command through fang and exits non-zero on error.
+func Execute() {
+	if err := fang.Execute(context.Background(), rootCmd); err != nil {
+		os.Exit(1)
+	}
+}
+
+// initConfig resolves config as flag, then env, then file.
+func initConfig() {
+	if cfgFile != "" {
+		viper.SetConfigFile(cfgFile)
+	} else {
+		if dir, err := os.UserConfigDir(); err == nil {
+			viper.AddConfigPath(filepath.Join(dir, "{{.name}}"))
+		}
+		if home, err := os.UserHomeDir(); err == nil {
+			viper.AddConfigPath(home)
+		}
+		viper.AddConfigPath(".")
+		viper.SetConfigName("{{.name}}")
+	}
+	viper.SetEnvPrefix(strings.ToUpper(strings.ReplaceAll("{{.name}}", "-", "_")))
+	viper.SetEnvKeyReplacer(strings.NewReplacer("-", "_", ".", "_"))
+	viper.AutomaticEnv()
+	_ = viper.ReadInConfig()
+}

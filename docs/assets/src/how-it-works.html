@@ -1,0 +1,52 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="brand.css">
+<style>
+  body { background: radial-gradient(800px 420px at 50% 45%, rgba(232,163,61,0.13), transparent 70%), var(--ink); }
+  .grid { mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, #000 20%, transparent 80%); }
+  .stage { position: absolute; inset: 0; display: grid; grid-template-columns: 330px 90px 300px 90px 330px; align-items: center; justify-content: center; padding: 0 60px; }
+  .col { width: 100%; display: flex; flex-direction: column; gap: 18px; }
+  .lab { font-size: 13px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--brand); margin-bottom: 4px; }
+  .box { background: var(--ink-2); border: 1px solid var(--ink-3); border-radius: 14px; padding: 16px 18px; box-shadow: 0 14px 34px rgba(0,0,0,0.4); }
+  .box b { display: block; font-size: 20px; color: var(--cream); letter-spacing: -0.01em; }
+  .box span { display: block; margin-top: 4px; font-size: 14px; color: var(--mist); line-height: 1.45; }
+  .box code { font-family: "JetBrains Mono", monospace; font-size: 13px; color: var(--brand-2); }
+  .box.r { border-left: 3px solid var(--brand); } .box.u { border-left: 3px solid var(--warn); } .box.p { border-left: 3px solid var(--info); }
+  .box.d { border-left: 3px solid var(--ok); }
+  .engine { background: linear-gradient(180deg, var(--ink-2), var(--ink-4)); border: 1px solid var(--brand-3); border-radius: 20px; padding: 26px 24px; text-align: center; box-shadow: 0 0 60px rgba(232,163,61,0.18), 0 24px 60px rgba(0,0,0,0.5); }
+  .engine img { width: 84px; }
+  .engine h3 { margin-top: 8px; font-size: 30px; font-weight: 800; letter-spacing: -1px; color: var(--cream); }
+  .engine p { margin-top: 6px; font-size: 15px; color: var(--mist); line-height: 1.45; }
+  .chips { margin-top: 16px; display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+  .chips i { font-style: normal; font-family: "JetBrains Mono", monospace; font-size: 12px; padding: 3px 9px; border-radius: 99px; background: var(--ink-4); border: 1px solid var(--ink-3); color: var(--mist); }
+  .arrow { display: grid; place-items: center; }
+  .arrow svg { width: 70px; height: 24px; }
+  .note { position: absolute; left: 0; right: 0; bottom: 34px; text-align: center; font-size: 17px; color: var(--dim); }
+  .note b { color: var(--cream); font-weight: 600; }
+</style></head>
+<body>
+<div class="grid"></div>
+<div class="stage">
+  <div class="col">
+    <div class="lab">The canon</div>
+    <div class="box r"><b>Decision records</b><span><code>canon/records/&lt;scope&gt;/*.md</code><br>what, why, exceptions</span></div>
+    <div class="box u"><b>Rules</b><span><code>canon/rules/rules.yaml</code><br>checker code to record</span></div>
+    <div class="box p"><b>Profiles</b><span><code>canon/profiles/*.yaml</code><br>which records, which repo</span></div>
+  </div>
+  <div class="arrow"><svg viewBox="0 0 70 24" fill="none"><path d="M2 12h60M52 4l10 8-10 8" stroke="#E8A33D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+  <div class="engine">
+    <img src="../site/logo.svg" alt="">
+    <h3>canon engine</h3>
+    <p>rule → record → why<br>on every finding</p>
+    <div class="chips"><i>golangci-lint</i><i>ruff</i><i>hadolint</i><i>tflint</i><i>checkov</i><i>yamllint</i><i>built-in</i></div>
+  </div>
+  <div class="arrow"><svg viewBox="0 0 70 24" fill="none"><path d="M2 12h60M52 4l10 8-10 8" stroke="#E8A33D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+  <div class="col">
+    <div class="lab">Front doors</div>
+    <div class="box d"><b>MCP server</b><span><code>canon serve</code> · six tools, stdio or HTTP</span></div>
+    <div class="box d"><b>CLI</b><span><code>canon check | decide | review</code></span></div>
+    <div class="box d"><b>Claude Code hook</b><span><code>canon hook</code> · exit 2 sends findings back</span></div>
+    <div class="box d"><b>CI</b><span><code>canon check --changed-only --sarif</code></span></div>
+  </div>
+</div>
+<div class="note">Checkers return facts. <b>Only findings that match a rule are reported</b>, so each one has a reason.</div>
+</body></html>

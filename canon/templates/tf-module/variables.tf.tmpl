@@ -1,0 +1,15 @@
+variable "name" {
+  type        = string
+  description = "Name given to every resource the module creates."
+
+  validation {
+    condition     = can(regex("^[a-z0-9-]{3,63}$", var.name))
+    error_message = "name must be 3-63 lowercase letters, digits or hyphens."
+  }
+}
+
+variable "tags" {
+  type        = map(string)
+  description = "Tags merged onto every taggable resource."
+  default     = {}
+}
