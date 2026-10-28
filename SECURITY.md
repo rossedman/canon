@@ -35,7 +35,8 @@ for.
 ## Verifying releases
 
 Every release's `checksums.txt` is signed keylessly with cosign by this
-repo's release workflow, and the archives carry GitHub build provenance.
+repo's release workflow. Once the repository is public, the archives also
+carry GitHub build provenance, checked by the `gh attestation verify` line.
 Download an archive, `checksums.txt` and `checksums.txt.sigstore.json`, then:
 
 ```sh
